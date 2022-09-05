@@ -1,0 +1,10 @@
+runtime: nodejs16
+handlers:
+  - url: /
+    static_files: dist/index.html
+    upload: dist/index.html
+
+  # Vue SPA needs to serve multiple routes to index.html: the following handles the rewrite rules
+  - url: /.*
+    static_files: dist/index.html
+    upload: dist/index.html
