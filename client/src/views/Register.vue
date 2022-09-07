@@ -23,6 +23,19 @@
           placeholder=""
         />
       </n-form-item>
+      <n-form-item path="userImage" label="User image">
+        <n-upload
+          ref="upload"
+          action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
+          :default-upload="false"
+          :max="1"
+          multiple
+          @change="handleChange"
+        >
+          <n-button>Select File</n-button>
+        </n-upload>
+      </n-form-item>
+
       <n-row :gutter="[0, 24]">
         <n-col :span="24">
           <div
@@ -47,7 +60,6 @@
 import { defineComponent, ref } from 'vue'
 import {
   FormInst,
-  FormItemInst,
   FormRules,
   NForm,
   NFormItem,
@@ -55,13 +67,16 @@ import {
   NRow,
   NCol,
   NCard,
+  NUpload,
   NButton
 } from 'naive-ui'
+import type { UploadInst, UploadFileInfo } from 'naive-ui'
 
 interface ModelType {
   id: string
   username: string
   password: string
+  userImage: File | null
 }
 
 export default defineComponent({
@@ -73,15 +88,17 @@ export default defineComponent({
     NRow,
     NCol,
     NButton,
-    NCard
+    NCard,
+    NUpload
   },
   setup: () => {
     const formRef = ref<FormInst | null>(null)
-    const rPasswordFormItemRef = ref<FormItemInst | null>(null)
+    const uploadRef = ref<UploadInst | null>(null)
     const modelRef = ref<ModelType>({
       id: '',
       username: '',
-      password: ''
+      password: '',
+      userImage: null
     })
     const rules: FormRules = {
       id: [
@@ -105,13 +122,17 @@ export default defineComponent({
     }
     return {
       formRef,
-      rPasswordFormItemRef,
       model: modelRef,
       rules,
+      upload: uploadRef,
+      handleChange: (data: { file: UploadFileInfo }) => {
+        modelRef.value.userImage = data.file.file as File
+      },
       handleValidateButtonClick: async (e: MouseEvent) => {
         e.preventDefault()
         try {
           await formRef.value?.validate()
+          console.log(modelRef.value)
           // submit
         } catch (err) {
           // do nothing, .validate() handles the form error messages
