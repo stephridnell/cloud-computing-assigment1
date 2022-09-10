@@ -73,6 +73,7 @@ import {
 } from 'naive-ui'
 import type { UploadInst, UploadFileInfo } from 'naive-ui'
 import http from '../http'
+import router from '../router'
 
 interface ModelType {
   id: string
@@ -146,9 +147,9 @@ export default defineComponent({
             formData.append('userImage', modelRef.value.userImage)
           }
 
-          const response = await http.post('/register', formData)
-          console.log(response)
-          // submit
+          await http.post('/register', formData)
+          message.success('Registration successful, please login to continue')
+          router.push('/login')
         } catch (err: any) {
           message.error(err?.msg ?? 'Something went wrong',
             {
