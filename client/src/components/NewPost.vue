@@ -131,6 +131,7 @@ export default defineComponent({
             messageText: '',
             image: null
           }
+          uploadRef.value = null
           emit('newPost')
           window.scrollTo(0, 0)
         } catch (err: any) {
