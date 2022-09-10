@@ -71,6 +71,7 @@ import {
   NButton
 } from 'naive-ui'
 import type { UploadInst, UploadFileInfo } from 'naive-ui'
+import http from '../http'
 
 interface ModelType {
   id: string
@@ -133,6 +134,17 @@ export default defineComponent({
         try {
           await formRef.value?.validate()
           console.log(modelRef.value)
+
+          const formData = new FormData()
+          formData.append('id', modelRef.value.id)
+          formData.append('username', modelRef.value.username)
+          formData.append('password', modelRef.value.password)
+          if (modelRef.value.userImage) {
+            formData.append('userImage', modelRef.value.userImage)
+          }
+
+          const response = await http.post('/register', formData)
+          console.log(response)
           // submit
         } catch (err) {
           // do nothing, .validate() handles the form error messages

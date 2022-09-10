@@ -4,25 +4,16 @@ import { Datastore } from "@google-cloud/datastore";
 // Creates a client
 const datastore: Datastore = new Datastore();
 
-export const quickstart = async () => {
-  // The kind for the new entity
-  const kind = "Task";
-
-  // The name/ID for the new entity
-  const name = "sampletask1";
-
+export const storeEntity = async (kind: string, id: string, data: Record<string, any>) => {
   // The Cloud Datastore key for the new entity
-  const taskKey = datastore.key([kind, name]);
+  const taskKey = datastore.key([kind, id]);
 
   // Prepares the new entity
-  const task = {
+  const newEntity = {
     key: taskKey,
-    data: {
-      description: "Buy milk",
-    },
+    data,
   };
 
   // Saves the entity
-  // await datastore.save(task);
-  console.log(`Saved ${task.key.name}: ${task.data.description}`);
+  await datastore.save(newEntity);
 };
