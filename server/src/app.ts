@@ -12,7 +12,7 @@ const multer = Multer({
     },
 })
 
-const allowedOrigins = ['http://localhost:8080']
+const allowedOrigins = ['http://localhost:8080', 'https://steph-ridnell-ass-1.ts.r.appspot.com']
 
 const options: cors.CorsOptions = {
   origin: allowedOrigins
