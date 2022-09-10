@@ -31,7 +31,6 @@
               <logout-icon />
             </n-icon>
           </template>
-          Logout
         </n-button>
       </n-space>
     </n-layout-header>
