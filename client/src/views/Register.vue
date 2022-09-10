@@ -97,7 +97,6 @@ export default defineComponent({
     const formRef = ref<FormInst | null>(null)
     const message = useMessage()
     const uploadRef = ref<UploadInst | null>(null)
-    const errorRef = ref<string | null>(null)
     const loadingRef = ref(false)
     const modelRef = ref<ModelType>({
       id: '',
@@ -128,7 +127,6 @@ export default defineComponent({
     return {
       formRef,
       model: modelRef,
-      errorRef,
       loading: loadingRef,
       rules,
       upload: uploadRef,
@@ -138,7 +136,6 @@ export default defineComponent({
       handleValidateButtonClick: async (e: MouseEvent) => {
         e.preventDefault()
         loadingRef.value = true
-        errorRef.value = null
         try {
           await formRef.value?.validate()
           const formData = new FormData()
@@ -153,8 +150,7 @@ export default defineComponent({
           console.log(response)
           // submit
         } catch (err: any) {
-          errorRef.value = err.msg ?? 'Something went wrong'
-          message.error(err.msg ?? 'Something went wrong',
+          message.error(err?.msg ?? 'Something went wrong',
             {
               closable: true,
               duration: 5000

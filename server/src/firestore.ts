@@ -3,6 +3,7 @@ import { Firestore } from "@google-cloud/firestore"
 
 // Creates a client
 const firestore: Firestore = new Firestore()
+firestore.settings({ ignoreUndefinedProperties: true })
 
 export const storeEntity = async (
   kind: string,

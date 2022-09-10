@@ -57,7 +57,8 @@ app.post('/register', multer.single('userImage'), async (req: Request, res: Resp
   try {
     await storeEntity('user', id, { user_name: username, password, user_image: userImageUrl })
   } catch (err) {
-    throw new Error('Error storing new user')
+    console.log(err)
+    return res.status(500).json({ msg: 'Unexpected error occurred' })
   }
 
   return res.status(200).json({ id, username, password, userImageUrl })
