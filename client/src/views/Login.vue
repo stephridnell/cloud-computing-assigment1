@@ -53,10 +53,21 @@ import {
 } from 'naive-ui'
 import http from '../http'
 import router from '../router'
+import { useStore } from 'vuex'
 
 interface ModelType {
   id: string
   password: string
+}
+
+interface LoginResponse {
+  user: {
+    id: string
+    // eslint-disable-next-line camelcase
+    user_name: string
+    // eslint-disable-next-line camelcase
+    user_image: string
+  }
 }
 
 export default defineComponent({
@@ -71,6 +82,7 @@ export default defineComponent({
     NCard
   },
   setup: () => {
+    const store = useStore()
     const formRef = ref<FormInst | null>(null)
     const message = useMessage()
     const loadingRef = ref(false)
@@ -104,9 +116,9 @@ export default defineComponent({
         loadingRef.value = true
         try {
           await formRef.value?.validate()
-          await http.post('/auth/login', modelRef.value)
+          const data = await http.post('/auth/login', modelRef.value) as LoginResponse
+          store.commit('setCurrentUser', data.user)
           router.push('/forum')
-          // submit
         } catch (err: any) {
           if (err.msg) {
             message.error(err.msg,

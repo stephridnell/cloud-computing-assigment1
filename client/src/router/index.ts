@@ -1,3 +1,4 @@
+import store from '@/store'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 const routes: Array<RouteRecordRaw> = [
@@ -43,13 +44,17 @@ const router = createRouter({
 
 // redirect unauthed user to login
 router.beforeEach((to) => {
-  const publicPages = ['/login']
+  const publicPages = ['/login', '/register']
   const authRequired = !publicPages.includes(to.path)
 
-  // TODO
-  const auth = { user: { id: 'test-user' } }
+  const lsUser = window.localStorage.getItem('user')
 
-  if (authRequired && !auth.user) {
+  if (lsUser) {
+    const user = JSON.parse(lsUser)
+    store.commit('setCurrentUser', user)
+  }
+
+  if (authRequired && !store.getters.currentUser?.id) {
     return '/login'
   }
 })

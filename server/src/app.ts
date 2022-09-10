@@ -78,7 +78,7 @@ app.post('/auth/login', async (req: Request, res: Response) => {
 
   return res
     .status(200)
-    .json({ user: userByUsername })
+    .json({ user: {...userByUsername, id, password: undefined } })
 })
 
 app.listen(port, function () {
