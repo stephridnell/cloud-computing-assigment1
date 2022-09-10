@@ -1,5 +1,5 @@
 import express, { Application, Request, RequestHandler, Response } from 'express'
-import { getEntity, getEntityById, getLoginUser, storeEntity } from './firestore'
+import { getEntity, getEntityById, getLatestPosts, getLoginUser, storeEntity } from './firestore'
 import cors from 'cors'
 import Multer from 'multer'
 import { uploadFile } from './storage'
@@ -82,7 +82,6 @@ app.post('/auth/login', async (req: Request, res: Response) => {
     .json({ user: {...userByUsername, id, password: undefined } })
 })
 
-
 app.post('/post', multer.single('image'), async (req: Request, res: Response) => {
   const { subject, messageText, userId } = req.body
 
@@ -111,6 +110,16 @@ app.post('/post', multer.single('image'), async (req: Request, res: Response) =>
   }
 
   return res.sendStatus(200)
+})
+
+app.get('/latest-posts', async (req: Request, res: Response) => {
+  try {
+    const posts = await getLatestPosts()
+    return res.status(200).json({ posts })
+  } catch (err) {
+    console.log(err)
+    return res.status(500).json({ msg: 'Unexpected error occurred' })
+  }
 })
 
 app.listen(port, function () {
