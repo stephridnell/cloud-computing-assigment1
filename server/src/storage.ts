@@ -24,6 +24,7 @@ export const uploadFile = async (file: Express.Multer.File, prefix: string): Pro
       blobStream.on('finish', resolve)
       blobStream.on('error', reject)
     })
+    await blob.makePublic()
     return format(
       `https://storage.googleapis.com/${bucket.name}/${blob.name}`
     )
