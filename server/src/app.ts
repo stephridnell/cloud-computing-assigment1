@@ -1,5 +1,5 @@
 import express, { Application, Request, RequestHandler, Response } from 'express'
-import { getEntityById, storeEntity } from './datastore'
+import { getEntity, getEntityById, storeEntity } from './firestore'
 import cors from 'cors'
 import Multer from 'multer'
 import { uploadFile } from './storage'
@@ -36,13 +36,14 @@ app.post('/register', multer.single('userImage'), async (req: Request, res: Resp
   }
 
   // check if ID already exists in DB
-  const existingUser = await getEntityById('user', id)
-  if (existingUser) {
+  const userById = await getEntityById('user', id)
+  if (userById) {
     return res.status(400).json({ error: 'The ID already exists' })
   }
 
   // check if username already exists in DB
-  if (false) {
+  const userByUsername = await getEntity('user', 'user_name', username)
+  if (userByUsername) {
     return res.status(400).json({ error: 'The username already exists' })
   }
   
@@ -54,7 +55,7 @@ app.post('/register', multer.single('userImage'), async (req: Request, res: Resp
 
   // all good, store new user in firestore
   try {
-    await storeEntity('user', id, { username, password, userImageUrl })
+    await storeEntity('user', id, { user_name: username, password, user_image: userImageUrl })
   } catch (err) {
     throw new Error('Error storing new user')
   }
