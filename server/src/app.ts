@@ -1,5 +1,5 @@
 import express, { Application, Request, RequestHandler, Response } from 'express'
-import { storeEntity } from './datastore'
+import { getEntityById, storeEntity } from './datastore'
 import cors from 'cors'
 import Multer from 'multer'
 import { uploadFile } from './storage'
@@ -32,17 +32,18 @@ app.post('/register', multer.single('userImage'), async (req: Request, res: Resp
   const { id, username, password } = req.body
 
   if (!id || !username || !password) {
-    res.status(400).json({ error: 'Missing required field' })
+    return res.status(400).json({ error: 'Missing required field' })
   }
 
   // check if ID already exists in DB
-  if (false) {
-    res.status(400).json({ error: 'The ID already exists' })
+  const existingUser = await getEntityById('user', id)
+  if (existingUser) {
+    return res.status(400).json({ error: 'The ID already exists' })
   }
 
   // check if username already exists in DB
   if (false) {
-    res.status(400).json({ error: 'The username already exists' })
+    return res.status(400).json({ error: 'The username already exists' })
   }
   
   let userImageUrl: string | void
@@ -58,20 +59,20 @@ app.post('/register', multer.single('userImage'), async (req: Request, res: Resp
     throw new Error('Error storing new user')
   }
 
-  res.status(200).json({ id, username, password, userImageUrl })
+  return res.status(200).json({ id, username, password, userImageUrl })
 })
 
 app.post('/auth/login', (req: Request, res: Response) => {
   const { id, password } = req.body
   if (!id || !password) {
-    res.status(400).json({ error: 'ID or password is invalid' })
+    return res.status(400).json({ error: 'ID or password is invalid' })
   }
   // check if user with these credentials exists
   if (false) {
-    res.status(400).json({ error: 'ID or password is invalid' })
+    return res.status(400).json({ error: 'ID or password is invalid' })
   }
 
-  res
+  return res
     .status(200)
     .json({ user: { id: '123', username: '123', profileImage: '123' } })
 })
