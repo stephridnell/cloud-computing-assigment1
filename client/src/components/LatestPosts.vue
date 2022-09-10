@@ -75,7 +75,7 @@ export default defineComponent({
   setup: () => {
     return {
       posts: postsRef,
-      nl2br: (str) => {
+      nl2br: (str: string) => {
         const breakTag = '<br />'
         const replaceStr = '$1' + breakTag + '$2'
         return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, replaceStr)
