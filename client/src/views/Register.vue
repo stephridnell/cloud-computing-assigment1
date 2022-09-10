@@ -45,7 +45,7 @@
               align-items: center;
             "
           >
-            <n-button round type="primary" @click="handleValidateButtonClick">
+            <n-button :loading="loading" round type="primary" @click="handleValidateButtonClick">
               Register
             </n-button>
             <router-link to="/login">Login</router-link>
@@ -68,7 +68,8 @@ import {
   NCol,
   NCard,
   NUpload,
-  NButton
+  NButton,
+  useMessage
 } from 'naive-ui'
 import type { UploadInst, UploadFileInfo } from 'naive-ui'
 import http from '../http'
@@ -94,7 +95,10 @@ export default defineComponent({
   },
   setup: () => {
     const formRef = ref<FormInst | null>(null)
+    const message = useMessage()
     const uploadRef = ref<UploadInst | null>(null)
+    const errorRef = ref<string | null>(null)
+    const loadingRef = ref(false)
     const modelRef = ref<ModelType>({
       id: '',
       username: '',
@@ -124,6 +128,8 @@ export default defineComponent({
     return {
       formRef,
       model: modelRef,
+      errorRef,
+      loading: loadingRef,
       rules,
       upload: uploadRef,
       handleChange: (data: { file: UploadFileInfo }) => {
@@ -131,10 +137,10 @@ export default defineComponent({
       },
       handleValidateButtonClick: async (e: MouseEvent) => {
         e.preventDefault()
+        loadingRef.value = true
+        errorRef.value = null
         try {
           await formRef.value?.validate()
-          console.log(modelRef.value)
-
           const formData = new FormData()
           formData.append('id', modelRef.value.id)
           formData.append('username', modelRef.value.username)
@@ -146,9 +152,15 @@ export default defineComponent({
           const response = await http.post('/register', formData)
           console.log(response)
           // submit
-        } catch (err) {
-          // do nothing, .validate() handles the form error messages
-          // i just dont want unresolved promise errors showing up in console
+        } catch (err: any) {
+          errorRef.value = err.msg ?? 'Something went wrong'
+          message.error(err.msg ?? 'Something went wrong',
+            {
+              closable: true,
+              duration: 5000
+            })
+        } finally {
+          loadingRef.value = false
         }
       }
     }

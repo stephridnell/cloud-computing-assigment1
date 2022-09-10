@@ -32,19 +32,19 @@ app.post('/register', multer.single('userImage'), async (req: Request, res: Resp
   const { id, username, password } = req.body
 
   if (!id || !username || !password) {
-    return res.status(400).json({ error: 'Missing required field' })
+    return res.status(400).json({ msg: 'Missing required field' })
   }
 
   // check if ID already exists in DB
   const userById = await getEntityById('user', id)
   if (userById) {
-    return res.status(400).json({ error: 'The ID already exists' })
+    return res.status(400).json({ msg: 'The ID already exists' })
   }
 
   // check if username already exists in DB
   const userByUsername = await getEntity('user', 'user_name', username)
   if (userByUsername) {
-    return res.status(400).json({ error: 'The username already exists' })
+    return res.status(400).json({ msg: 'The username already exists' })
   }
   
   let userImageUrl: string | void
@@ -66,11 +66,11 @@ app.post('/register', multer.single('userImage'), async (req: Request, res: Resp
 app.post('/auth/login', (req: Request, res: Response) => {
   const { id, password } = req.body
   if (!id || !password) {
-    return res.status(400).json({ error: 'ID or password is invalid' })
+    return res.status(400).json({ msg: 'ID or password is invalid' })
   }
   // check if user with these credentials exists
   if (false) {
-    return res.status(400).json({ error: 'ID or password is invalid' })
+    return res.status(400).json({ msg: 'ID or password is invalid' })
   }
 
   return res

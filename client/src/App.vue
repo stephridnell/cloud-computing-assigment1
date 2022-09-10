@@ -1,18 +1,22 @@
 <template>
   <div>
     <TopNav />
-    <router-view />
+    <n-message-provider>
+      <router-view />
+    </n-message-provider>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import TopNav from '@/components/TopNav.vue'
+import { NMessageProvider } from 'naive-ui'
 
 export default defineComponent({
   name: 'App',
   components: {
-    TopNav
+    TopNav,
+    NMessageProvider
   }
 })
 </script>
