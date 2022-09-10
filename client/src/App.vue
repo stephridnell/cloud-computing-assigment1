@@ -1,32 +1,36 @@
 <template>
-  <div>
-    <TopNav />
+  <n-layout embedded content-style="min-height: 100vh;">
     <n-message-provider>
       <router-view />
     </n-message-provider>
-  </div>
+  </n-layout>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import TopNav from '@/components/TopNav.vue'
-import { NMessageProvider } from 'naive-ui'
+import { NMessageProvider, NLayout } from 'naive-ui'
 
 export default defineComponent({
   name: 'App',
   components: {
-    TopNav,
-    NMessageProvider
+    NMessageProvider,
+    NLayout
   }
 })
 </script>
 
 <style lang="scss">
+html,body {
+  margin:0;
+  padding:0;
+  height:100%;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  padding: 1rem;
+  min-height: 100vh;
 }
 </style>

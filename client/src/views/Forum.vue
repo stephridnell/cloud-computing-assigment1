@@ -1,13 +1,17 @@
 <template>
-  <div class="forum">
+  <n-layout-content>
     <h1>Forum</h1>
-  </div>
+  </n-layout-content>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { NLayoutContent } from 'naive-ui'
 
 export default defineComponent({
-  name: 'ForumView'
+  name: 'ForumView',
+  components: {
+    NLayoutContent
+  }
 })
 </script>

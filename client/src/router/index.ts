@@ -7,6 +7,27 @@ const routes: Array<RouteRecordRaw> = [
     redirect: '/forum'
   },
   {
+    path: '/',
+    redirect: '/forum',
+    component: () => import(/* webpackChunkName: "loggedInWrapper" */ '../views/LoggedInWrapper.vue'),
+    children: [
+      {
+        // UserProfile will be rendered inside User's <router-view>
+        // when /user/:id/profile is matched
+        path: 'forum',
+        name: 'forum',
+        component: () => import(/* webpackChunkName: "forum" */ '../views/Forum.vue')
+      },
+      {
+        // UserPosts will be rendered inside User's <router-view>
+        // when /user/:id/posts is matched
+        path: 'user',
+        name: 'user',
+        component: () => import(/* webpackChunkName: "user" */ '../views/User.vue')
+      }
+    ]
+  },
+  {
     path: '/login',
     name: 'login',
     component: () =>
@@ -17,17 +38,6 @@ const routes: Array<RouteRecordRaw> = [
     name: 'register',
     component: () =>
       import(/* webpackChunkName: "register" */ '../views/Register.vue')
-  },
-  {
-    path: '/forum',
-    name: 'forum',
-    component: () =>
-      import(/* webpackChunkName: "forum" */ '../views/Forum.vue')
-  },
-  {
-    path: '/user',
-    name: 'user',
-    component: () => import(/* webpackChunkName: "user" */ '../views/User.vue')
   },
   {
     path: '/:pathMatch(.*)*',
