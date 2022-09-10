@@ -42,3 +42,19 @@ export const getEntity = async (
     return document[0].data()
   }
 }
+
+export const getLoginUser = async (
+  id: string,
+  password: string
+): Promise<FirebaseFirestore.DocumentData | undefined> => {
+  const document = await firestore.collection('user').doc(id).get()
+  if (!document.exists) {
+    return undefined
+  } else {
+    const docData = document.data()
+    if (!docData || docData.password !== password) {
+      return undefined
+    }
+    return docData
+  }
+}

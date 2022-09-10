@@ -25,7 +25,7 @@
               align-items: center;
             "
           >
-            <n-button round type="primary" @click="handleValidateButtonClick">
+            <n-button :loading="loading" round type="primary" @click="handleValidateButtonClick">
               Login
             </n-button>
             <router-link to="/register">Register</router-link>
@@ -48,8 +48,11 @@ import {
   NRow,
   NCol,
   NCard,
-  NButton
+  NButton,
+  useMessage
 } from 'naive-ui'
+import http from '../http'
+import router from '../router'
 
 interface ModelType {
   id: string
@@ -69,6 +72,8 @@ export default defineComponent({
   },
   setup: () => {
     const formRef = ref<FormInst | null>(null)
+    const message = useMessage()
+    const loadingRef = ref(false)
     const rPasswordFormItemRef = ref<FormItemInst | null>(null)
     const modelRef = ref<ModelType>({
       id: '',
@@ -91,16 +96,27 @@ export default defineComponent({
     return {
       formRef,
       rPasswordFormItemRef,
+      loading: loadingRef,
       model: modelRef,
       rules,
       handleValidateButtonClick: async (e: MouseEvent) => {
         e.preventDefault()
+        loadingRef.value = true
         try {
           await formRef.value?.validate()
+          await http.post('/auth/login', modelRef.value)
+          router.push('/forum')
           // submit
-        } catch (err) {
-          // do nothing, .validate() handles the form error messages
-          // i just dont want unresolved promise errors showing up in console
+        } catch (err: any) {
+          if (err.msg) {
+            message.error(err.msg,
+              {
+                closable: true,
+                duration: 5000
+              })
+          }
+        } finally {
+          loadingRef.value = false
         }
       }
     }

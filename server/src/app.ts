@@ -1,5 +1,5 @@
 import express, { Application, Request, RequestHandler, Response } from 'express'
-import { getEntity, getEntityById, storeEntity } from './firestore'
+import { getEntity, getEntityById, getLoginUser, storeEntity } from './firestore'
 import cors from 'cors'
 import Multer from 'multer'
 import { uploadFile } from './storage'
@@ -64,19 +64,21 @@ app.post('/register', multer.single('userImage'), async (req: Request, res: Resp
   return res.status(200).json({ id, username, password, userImageUrl })
 })
 
-app.post('/auth/login', (req: Request, res: Response) => {
+app.post('/auth/login', async (req: Request, res: Response) => {
   const { id, password } = req.body
   if (!id || !password) {
     return res.status(400).json({ msg: 'ID or password is invalid' })
   }
-  // check if user with these credentials exists
-  if (false) {
+
+  // check if username already exists in DB
+  const userByUsername = await getLoginUser(id, password)
+  if (!userByUsername) {
     return res.status(400).json({ msg: 'ID or password is invalid' })
   }
 
   return res
     .status(200)
-    .json({ user: { id: '123', username: '123', profileImage: '123' } })
+    .json({ user: userByUsername })
 })
 
 app.listen(port, function () {

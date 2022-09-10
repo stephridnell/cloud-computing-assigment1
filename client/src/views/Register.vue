@@ -151,11 +151,13 @@ export default defineComponent({
           message.success('Registration successful, please login to continue')
           router.push('/login')
         } catch (err: any) {
-          message.error(err?.msg ?? 'Something went wrong',
-            {
-              closable: true,
-              duration: 5000
-            })
+          if (err.msg) {
+            message.error(err.msg,
+              {
+                closable: true,
+                duration: 5000
+              })
+          }
         } finally {
           loadingRef.value = false
         }
