@@ -1,6 +1,8 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios'
 
-const instance: AxiosInstance = axios.create({ baseURL: 'http://localhost:8081/' })
+const instance: AxiosInstance = axios.create({
+  baseURL: process.env.NODE_ENV === 'production' ? 'https://api-dot-steph-ridnell-ass-1.ts.r.appspot.com/' : 'http://localhost:8081/'
+})
 
 instance.interceptors.request.use(
   (config: AxiosRequestConfig): AxiosRequestConfig => {
