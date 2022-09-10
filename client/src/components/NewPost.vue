@@ -82,7 +82,7 @@ export default defineComponent({
     NCard,
     NUpload
   },
-  setup: () => {
+  setup: (_props, { emit }) => {
     const store = useStore()
     const currentUser = computed(() => store.getters.currentUser)
     const formRef = ref<FormInst | null>(null)
@@ -113,6 +113,7 @@ export default defineComponent({
       },
       handleValidateButtonClick: async (e: MouseEvent) => {
         e.preventDefault()
+        emit('newPost')
         loadingRef.value = true
         try {
           await formRef.value?.validate()
@@ -125,7 +126,13 @@ export default defineComponent({
           }
           await http.post('/post', formData)
           message.success('New message posted')
-          // TODO reload posts
+          modelRef.value = {
+            subject: '',
+            messageText: '',
+            image: null
+          }
+          emit('newPost')
+          window.scrollTo(0, 0)
         } catch (err: any) {
           if (err.msg) {
             message.error(err.msg,

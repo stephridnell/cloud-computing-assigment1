@@ -85,9 +85,14 @@ export default defineComponent({
       }
     }
   },
-  mounted: async () => {
-    const data = await http.get('/latest-posts') as LatestPostsResponse
-    postsRef.value = data.posts
+  methods: {
+    fetchPosts: async () => {
+      const data = await http.get('/latest-posts') as LatestPostsResponse
+      postsRef.value = data.posts
+    }
+  },
+  mounted: async function () {
+    await this.fetchPosts()
   }
 })
 </script>
