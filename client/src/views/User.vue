@@ -1,13 +1,17 @@
 <template>
-  <div class="user">
+  <n-layout-content>
     <h1>User</h1>
-  </div>
+  </n-layout-content>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { NLayoutContent } from 'naive-ui'
 
 export default defineComponent({
-  name: 'UserView'
+  name: 'UserView',
+  components: {
+    NLayoutContent
+  }
 })
 </script>

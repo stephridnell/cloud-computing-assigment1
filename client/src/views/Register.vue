@@ -26,10 +26,8 @@
       <n-form-item path="userImage" label="User image">
         <n-upload
           ref="upload"
-          action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
           :default-upload="false"
           :max="1"
-          multiple
           @change="handleChange"
         >
           <n-button>Select File</n-button>
@@ -45,7 +43,7 @@
               align-items: center;
             "
           >
-            <n-button :loading="loading" round type="primary" @click="handleValidateButtonClick">
+            <n-button :loading="loading" type="primary" @click="handleValidateButtonClick">
               Register
             </n-button>
             <router-link to="/login">Login</router-link>

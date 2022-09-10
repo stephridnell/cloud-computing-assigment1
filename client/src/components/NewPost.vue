@@ -1,21 +1,31 @@
 <template>
-  <n-card title="Login">
+  <n-card title="New message">
     <n-form ref="formRef" :model="model" :rules="rules">
-      <n-form-item path="id" label="ID">
+      <n-form-item path="subject" label="Subject">
         <n-input
-          v-model:value="model.id"
+          v-model:value="model.subject"
           @keydown.enter.prevent
           placeholder=""
         />
       </n-form-item>
-      <n-form-item path="password" label="Password">
+      <n-form-item path="messageText" label="Message text">
         <n-input
-          type="password"
-          v-model:value="model.password"
-          show-password-on="click"
+          type="textarea"
+          v-model:value="model.messageText"
           placeholder=""
         />
       </n-form-item>
+      <n-form-item path="image" label="Image">
+        <n-upload
+          ref="upload"
+          :default-upload="false"
+          :max="1"
+          @change="handleChange"
+        >
+          <n-button>Select File</n-button>
+        </n-upload>
+      </n-form-item>
+
       <n-row :gutter="[0, 24]">
         <n-col :span="24">
           <div
@@ -26,9 +36,8 @@
             "
           >
             <n-button :loading="loading" type="primary" @click="handleValidateButtonClick">
-              Login
+              Submit
             </n-button>
-            <router-link to="/register">Register</router-link>
           </div>
         </n-col>
       </n-row>
@@ -37,10 +46,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import {
   FormInst,
-  FormItemInst,
   FormRules,
   NForm,
   NFormItem,
@@ -48,30 +56,22 @@ import {
   NRow,
   NCol,
   NCard,
+  NUpload,
   NButton,
   useMessage
 } from 'naive-ui'
+import type { UploadInst, UploadFileInfo } from 'naive-ui'
 import http from '../http'
-import router from '../router'
 import { useStore } from 'vuex'
 
 interface ModelType {
-  id: string
-  password: string
-}
-
-interface LoginResponse {
-  user: {
-    id: string
-    // eslint-disable-next-line camelcase
-    user_name: string
-    // eslint-disable-next-line camelcase
-    user_image: string
-  }
+  subject: string
+  messageText: string
+  image: File | null
 }
 
 export default defineComponent({
-  name: 'LoginView',
+  name: 'NewPost',
   components: {
     NForm,
     NFormItem,
@@ -79,46 +79,53 @@ export default defineComponent({
     NRow,
     NCol,
     NButton,
-    NCard
+    NCard,
+    NUpload
   },
   setup: () => {
     const store = useStore()
+    const currentUser = computed(() => store.getters.currentUser)
     const formRef = ref<FormInst | null>(null)
     const message = useMessage()
+    const uploadRef = ref<UploadInst | null>(null)
     const loadingRef = ref(false)
-    const rPasswordFormItemRef = ref<FormItemInst | null>(null)
     const modelRef = ref<ModelType>({
-      id: '',
-      password: ''
+      subject: '',
+      messageText: '',
+      image: null
     })
     const rules: FormRules = {
-      id: [
+      subject: [
         {
           required: true,
-          message: 'ID is required'
-        }
-      ],
-      password: [
-        {
-          required: true,
-          message: 'Password is required'
+          message: 'Subject is required'
         }
       ]
     }
     return {
       formRef,
-      rPasswordFormItemRef,
-      loading: loadingRef,
       model: modelRef,
+      loading: loadingRef,
       rules,
+      upload: uploadRef,
+      handleChange: (data: { file: UploadFileInfo }) => {
+        modelRef.value.image = data.file.file as File
+      },
       handleValidateButtonClick: async (e: MouseEvent) => {
         e.preventDefault()
         loadingRef.value = true
         try {
           await formRef.value?.validate()
-          const data = await http.post('/auth/login', modelRef.value) as LoginResponse
-          store.commit('setCurrentUser', data.user)
-          router.push('/forum')
+          const formData = new FormData()
+          formData.append('subject', modelRef.value.subject)
+          formData.append('messageText', modelRef.value.messageText)
+          formData.append('userId', currentUser.value.id)
+          if (modelRef.value.image) {
+            formData.append('image', modelRef.value.image)
+          }
+          await http.post('/post', formData)
+          message.success('New message posted')
+          // TODO reload posts
         } catch (err: any) {
           if (err.msg) {
             message.error(err.msg,
@@ -135,10 +142,3 @@ export default defineComponent({
   }
 })
 </script>
-<style scoped>
-.n-card {
-  max-width: 420px;
-  margin: 0 auto;
-  margin-top: 100px;
-}
-</style>

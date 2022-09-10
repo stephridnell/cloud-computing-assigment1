@@ -3,6 +3,7 @@ import { getEntity, getEntityById, getLoginUser, storeEntity } from './firestore
 import cors from 'cors'
 import Multer from 'multer'
 import { uploadFile } from './storage'
+import { v4 as uuidv4 } from 'uuid'
 
 const multer = Multer({
     storage: Multer.memoryStorage(),
@@ -79,6 +80,37 @@ app.post('/auth/login', async (req: Request, res: Response) => {
   return res
     .status(200)
     .json({ user: {...userByUsername, id, password: undefined } })
+})
+
+
+app.post('/post', multer.single('image'), async (req: Request, res: Response) => {
+  const { subject, messageText, userId } = req.body
+
+  if (!subject) {
+    return res.status(400).json({ msg: 'Message must include a subject' })
+  }
+  
+  let imageUrl: string | void
+  // upload the image to cloud storage
+  if (req.file) {
+      imageUrl = await uploadFile(req.file, 'message')
+  }
+
+  // all good, store new user in firestore
+  try {
+    await storeEntity('message', uuidv4(), {
+      subject,
+      message_text: messageText,
+      image: imageUrl,
+      created_by: userId,
+      created_at: new Date().getTime()
+    })
+  } catch (err) {
+    console.log(err)
+    return res.status(500).json({ msg: 'Unexpected error occurred' })
+  }
+
+  return res.sendStatus(200)
 })
 
 app.listen(port, function () {

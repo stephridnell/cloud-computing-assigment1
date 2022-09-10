@@ -21,7 +21,6 @@
               size="small"
               :src="currentUser.user_image"
             />
-
             {{ currentUser.user_name }}
           </n-button>
         </router-link>
@@ -80,7 +79,7 @@ export default defineComponent({
 }
 
 .n-layout-content {
-  background: rgba(128, 128, 128, 0.4);
+  background: transparent;
   padding: 24px;
 }
 
