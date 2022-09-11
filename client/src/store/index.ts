@@ -1,11 +1,6 @@
 /* eslint-disable camelcase */
 import { createStore } from 'vuex'
-
-interface User {
-  user_name: string
-  user_image: string
-  id: string
-}
+import { User } from '../types'
 
 interface State {
   user: User

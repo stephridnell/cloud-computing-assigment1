@@ -1,17 +1,29 @@
 <template>
   <n-layout-content>
-    <h1>User</h1>
+    <change-password :currentUser="currentUser" />
   </n-layout-content>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { NLayoutContent } from 'naive-ui'
+import { computed, defineComponent } from 'vue'
+import {
+  NLayoutContent
+} from 'naive-ui'
+import { useStore } from 'vuex'
+import ChangePassword from '../components/ChangePassword.vue'
 
 export default defineComponent({
   name: 'UserView',
   components: {
-    NLayoutContent
+    NLayoutContent,
+    ChangePassword
+  },
+  setup: () => {
+    const store = useStore()
+    const currentUser = computed(() => store.getters.currentUser)
+    return {
+      currentUser
+    }
   }
 })
 </script>
