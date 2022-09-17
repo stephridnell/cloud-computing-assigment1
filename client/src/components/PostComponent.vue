@@ -9,7 +9,7 @@
           :src="post.user.user_image"
         />
       </div>
-      <div>
+      <div style="flex-grow:1;">
         <div>
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
