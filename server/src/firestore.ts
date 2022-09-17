@@ -72,7 +72,7 @@ export const getLoginUser = async (
 // not the cheapest operation with the getting user data in a map but yolo
 export const getLatestPosts = async (): Promise<FirebaseFirestore.DocumentData[]> => {
   const documents = await (
-    await firestore.collection('message').orderBy('created_at', 'desc').limit(10).get()
+    await firestore.collection('message').orderBy('updated_at', 'desc').limit(10).get()
   ).docs
   if (documents.length === 0) {
     return []
@@ -83,6 +83,25 @@ export const getLatestPosts = async (): Promise<FirebaseFirestore.DocumentData[]
     return {
       ...data,
       user: { ...user, id: data.created_by, password: undefined }
+    }
+  }))
+}
+
+export const getUserPosts = async (userId: string): Promise<FirebaseFirestore.DocumentData[]> => {
+  const documents = await (
+    await firestore.collection('message').where('created_by', "==", userId).orderBy('updated_at', 'desc').get()
+  ).docs
+  if (documents.length === 0) {
+    return []
+  }
+
+  // user will be the same for all these posts so dont need to do a lookup for each post
+  const user = await getEntityById('user', userId)
+  return Promise.all(documents.map(async doc => {
+    const data = doc.data()
+    return {
+      ...data,
+      user
     }
   }))
 }

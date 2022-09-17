@@ -1,5 +1,5 @@
 import express, { Application, Request, RequestHandler, Response } from 'express'
-import { getEntity, getEntityById, getLatestPosts, getLoginUser, storeEntity, updateEntity } from './firestore'
+import { getEntity, getEntityById, getLatestPosts, getLoginUser, getUserPosts, storeEntity, updateEntity } from './firestore'
 import cors from 'cors'
 import Multer from 'multer'
 import { uploadFile } from './storage'
@@ -97,12 +97,14 @@ app.post('/post', multer.single('image'), async (req: Request, res: Response) =>
 
   // all good, store new user in firestore
   try {
+    const now = new Date().getTime()
     await storeEntity('message', uuidv4(), {
       subject,
       message_text: messageText,
       image: imageUrl,
       created_by: userId,
-      created_at: new Date().getTime()
+      created_at: now,
+      updated_at: now
     })
   } catch (err) {
     console.log(err)
@@ -115,6 +117,16 @@ app.post('/post', multer.single('image'), async (req: Request, res: Response) =>
 app.get('/latest-posts', async (req: Request, res: Response) => {
   try {
     const posts = await getLatestPosts()
+    return res.status(200).json({ posts })
+  } catch (err) {
+    console.log(err)
+    return res.status(500).json({ msg: 'Unexpected error occurred' })
+  }
+})
+
+app.get('/:userId/posts', async (req: Request, res: Response) => {
+  try {
+    const posts = await getUserPosts(req.params.userId)
     return res.status(200).json({ posts })
   } catch (err) {
     console.log(err)

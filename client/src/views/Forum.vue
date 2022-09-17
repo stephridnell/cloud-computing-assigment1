@@ -8,8 +8,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { NLayoutContent } from 'naive-ui'
-import NewPost from '@/components/NewPost.vue'
-import LatestPosts from '@/components/LatestPosts.vue'
+import NewPost from '../components/NewPost.vue'
+import LatestPosts from '../components/LatestPosts.vue'
 
 export default defineComponent({
   name: 'ForumView',

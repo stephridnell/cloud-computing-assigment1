@@ -1,6 +1,7 @@
 <template>
   <n-layout-content>
     <change-password :currentUser="currentUser" />
+    <user-posts :currentUser="currentUser" />
   </n-layout-content>
 </template>
 
@@ -11,12 +12,14 @@ import {
 } from 'naive-ui'
 import { useStore } from 'vuex'
 import ChangePassword from '../components/ChangePassword.vue'
+import UserPosts from '../components/UserPosts.vue'
 
 export default defineComponent({
   name: 'UserView',
   components: {
     NLayoutContent,
-    ChangePassword
+    ChangePassword,
+    UserPosts
   },
   setup: () => {
     const store = useStore()

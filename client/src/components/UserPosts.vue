@@ -1,8 +1,5 @@
 <template>
   <div>
-    <n-space align="center" justify="flex-end" style="margin-bottom: 24px">
-      <n-button strong secondary type="primary" @click="scrollToBottom">New post</n-button>
-    </n-space>
     <n-space vertical>
       <post-component v-for="(post, index) in posts" :key="index" :post="post"/>
     </n-space>
@@ -10,11 +7,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-import { NSpace, NButton } from 'naive-ui'
+import { defineComponent, PropType, ref } from 'vue'
+import { NSpace } from 'naive-ui'
 import http from '../http'
 import PostComponent from './PostComponent.vue'
-import { Post } from '../types'
+import { Post, User } from '../types'
 
 interface LatestPostsResponse {
   posts: Post[]
@@ -23,11 +20,16 @@ interface LatestPostsResponse {
 const postsRef = ref<Post[]>([])
 
 export default defineComponent({
-  name: 'NewPost',
+  name: 'UserPosts',
   components: {
     PostComponent,
-    NSpace,
-    NButton
+    NSpace
+  },
+  props: {
+    currentUser: {
+      type: Object as PropType<User>,
+      required: true
+    }
   },
   setup: () => {
     return {
@@ -42,14 +44,9 @@ export default defineComponent({
       }
     }
   },
-  methods: {
-    fetchPosts: async () => {
-      const data = await http.get('/latest-posts') as LatestPostsResponse
-      postsRef.value = data.posts
-    }
-  },
   mounted: async function () {
-    await this.fetchPosts()
+    const data = await http.get(`/${this.currentUser.id}/posts`) as LatestPostsResponse
+    postsRef.value = data.posts
   }
 })
 </script>
