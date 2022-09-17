@@ -100,8 +100,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-img {
+.n-image img {
   max-width: 100%;
+  max-height: 200px;
 }
 .post-user {
   font-size: 16px;
