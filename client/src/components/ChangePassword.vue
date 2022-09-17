@@ -45,6 +45,8 @@ import {
 } from 'naive-ui'
 import http from '../http'
 import { User } from '../types'
+import router from '../router'
+import { useStore } from 'vuex'
 
 interface ModelType {
   password: string
@@ -68,6 +70,7 @@ export default defineComponent({
     }
   },
   setup: (props) => {
+    const store = useStore()
     const formRef = ref<FormInst | null>(null)
     const message = useMessage()
     const loadingRef = ref(false)
@@ -100,7 +103,9 @@ export default defineComponent({
         try {
           await formRef.value?.validate()
           await http.post(`/${props.currentUser.id}/update-password`, modelRef.value)
-          message.success('Password updated')
+          message.success('Success. Please login with your new password.')
+          store.commit('logout')
+          router.push('/login')
         } catch (err: any) {
           if (err.msg) {
             message.error(err.msg,

@@ -1,5 +1,5 @@
 import express, { Application, Request, RequestHandler, Response } from 'express'
-import { getEntity, getEntityById, getLatestPosts, getLoginUser, storeEntity } from './firestore'
+import { getEntity, getEntityById, getLatestPosts, getLoginUser, storeEntity, updateEntity } from './firestore'
 import cors from 'cors'
 import Multer from 'multer'
 import { uploadFile } from './storage'
@@ -120,6 +120,25 @@ app.get('/latest-posts', async (req: Request, res: Response) => {
     console.log(err)
     return res.status(500).json({ msg: 'Unexpected error occurred' })
   }
+})
+
+app.post('/:userId/update-password', async (req: Request, res: Response) => {
+  const userId = req.params.userId
+  const { password, newPassword } = req.body
+
+  const userByUsername = await getLoginUser(userId, password)
+  if (!userByUsername) {
+    return res.status(400).json({ msg: 'The old password is incorrect' })
+  }
+
+  try {
+    await updateEntity('user', userId, { password: newPassword })
+  } catch (err) {
+    console.log(err)
+    return res.status(500).json({ msg: 'Unexpected error occurred' })
+  }
+
+  return res.sendStatus(200)
 })
 
 app.listen(port, function () {

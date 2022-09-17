@@ -15,6 +15,16 @@ export const storeEntity = async (
   await doc.set(data)
 }
 
+export const updateEntity = async (
+  kind: string,
+  id: string,
+  data: Record<string, any>
+) => {
+  const collection = firestore.collection(kind)
+  const doc = collection.doc(id)
+  await doc.update(data)
+}
+
 export const getEntityById = async (
   kind: string,
   id: string
