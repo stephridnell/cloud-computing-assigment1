@@ -1,14 +1,17 @@
 <template>
   <n-layout-content>
-    <change-password :currentUser="currentUser" />
-    <user-posts :currentUser="currentUser" />
+    <n-space vertical>
+      <change-password :currentUser="currentUser" />
+      <user-posts :currentUser="currentUser" />
+    </n-space>
   </n-layout-content>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import {
-  NLayoutContent
+  NLayoutContent,
+  NSpace
 } from 'naive-ui'
 import { useStore } from 'vuex'
 import ChangePassword from '../components/ChangePassword.vue'
@@ -19,7 +22,8 @@ export default defineComponent({
   components: {
     NLayoutContent,
     ChangePassword,
-    UserPosts
+    UserPosts,
+    NSpace
   },
   setup: () => {
     const store = useStore()

@@ -20,7 +20,7 @@
                 {{ new Date(post.created_at).toLocaleString('en-AU') }}
               </span>
             </div>
-            <n-button strong secondary type="primary" @click="editPost">Edit post</n-button>
+            <n-button v-if="canEdit" strong secondary type="primary" @click="editPost">Edit post</n-button>
           </div>
         </div>
         <n-space vertical style="margin-top: 20px">

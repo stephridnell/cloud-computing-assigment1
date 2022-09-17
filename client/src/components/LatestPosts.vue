@@ -4,6 +4,7 @@
       <n-button strong secondary type="primary" @click="scrollToBottom">New post</n-button>
     </n-space>
     <n-space vertical>
+      <post-skeleton v-if="loading" />
       <post-component v-for="(post, index) in posts" :key="index" :post="post"/>
     </n-space>
   </div>
@@ -21,6 +22,7 @@ interface LatestPostsResponse {
 }
 
 const postsRef = ref<Post[]>([])
+const loadingRef = ref(true)
 
 export default defineComponent({
   name: 'NewPost',
@@ -31,6 +33,7 @@ export default defineComponent({
   },
   setup: () => {
     return {
+      loading: loadingRef,
       posts: postsRef,
       nl2br: (str: string) => {
         const breakTag = '<br />'
@@ -44,8 +47,10 @@ export default defineComponent({
   },
   methods: {
     fetchPosts: async () => {
+      loadingRef.value = true
       const data = await http.get('/latest-posts') as LatestPostsResponse
       postsRef.value = data.posts
+      loadingRef.value = false
     }
   },
   mounted: async function () {
