@@ -92,7 +92,7 @@ app.post('/post', multer.single('image'), async (req: Request, res: Response) =>
   let imageUrl: string | void
   // upload the image to cloud storage
   if (req.file) {
-      imageUrl = await uploadFile(req.file, 'message')
+      imageUrl = await uploadFile(req.file, userId + '-post')
   }
 
   // all good, store new user in firestore
@@ -104,6 +104,38 @@ app.post('/post', multer.single('image'), async (req: Request, res: Response) =>
       image: imageUrl,
       created_by: userId,
       created_at: now,
+      updated_at: now
+    })
+  } catch (err) {
+    console.log(err)
+    return res.status(500).json({ msg: 'Unexpected error occurred' })
+  }
+
+  return res.sendStatus(200)
+})
+
+app.put('/update/:postId', multer.single('image'), async (req: Request, res: Response) => {
+  const { subject, messageText, userId } = req.body
+
+  if (!subject) {
+    return res.status(400).json({ msg: 'Message must include a subject' })
+  }
+  
+  let imageUrl: string | void
+  // upload the image to cloud storage
+  if (req.file) {
+      imageUrl = await uploadFile(req.file, userId + '-post')
+  }
+
+  // all good, store new user in firestore
+  try {
+    const now = new Date().getTime()
+    await updateEntity('message', req.params.postId, {
+      subject,
+      message_text: messageText,
+      ...(imageUrl && {
+        image: imageUrl
+      }),
       updated_at: now
     })
   } catch (err) {

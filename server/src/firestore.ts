@@ -82,6 +82,7 @@ export const getLatestPosts = async (): Promise<FirebaseFirestore.DocumentData[]
     const user = await getEntityById('user', data.created_by)
     return {
       ...data,
+      id: doc.id,
       user: { ...user, id: data.created_by, password: undefined }
     }
   }))
@@ -101,6 +102,7 @@ export const getUserPosts = async (userId: string): Promise<FirebaseFirestore.Do
     const data = doc.data()
     return {
       ...data,
+      id: doc.id,
       user
     }
   }))

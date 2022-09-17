@@ -11,12 +11,17 @@
       </div>
       <div>
         <div>
-          <strong class="post-user">
-            {{ post.user.user_name }}
-          </strong><br/>
-          <span class="post-date">
-            {{ new Date(post.created_at).toLocaleString('en-AU') }}
-          </span>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <strong class="post-user">
+                {{ post.user.user_name }}
+              </strong><br/>
+              <span class="post-date">
+                {{ new Date(post.created_at).toLocaleString('en-AU') }}
+              </span>
+            </div>
+            <n-button strong secondary type="primary" @click="editPost">Edit post</n-button>
+          </div>
         </div>
         <n-space vertical style="margin-top: 20px">
           <n-image :src="post.image" />
@@ -24,13 +29,26 @@
         </n-space>
       </div>
     </div>
+    <n-modal
+      :show="showModal"
+      :style="bodyStyle"
+      :bordered="false"
+      :segmented="segmented">
+      <n-card
+        title="Edit post"
+        :bordered="false"
+        aria-modal="true">
+        <edit-post :post="post" @cancel="closeModal" />
+      </n-card>
+    </n-modal>
   </n-card>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
-import { NSpace, NImage, NAvatar, NCard } from 'naive-ui'
+import { defineComponent, PropType, ref } from 'vue'
+import { NSpace, NImage, NAvatar, NCard, NButton, NModal } from 'naive-ui'
 import { Post } from '../types'
+import EditPost from './EditPost.vue'
 
 export default defineComponent({
   name: 'PostComponent',
@@ -38,21 +56,43 @@ export default defineComponent({
     NSpace,
     NImage,
     NCard,
-    NAvatar
+    NButton,
+    NAvatar,
+    NModal,
+    EditPost
   },
   props: {
     post: {
       type: Object as PropType<Post>,
       required: true
+    },
+    canEdit: {
+      type: Boolean as PropType<boolean>,
+      default: false
     }
   },
   setup: () => {
+    const showModalRef = ref(false)
     return {
       nl2br: (str: string) => {
         const breakTag = '<br />'
         const replaceStr = '$1' + breakTag + '$2'
         return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, replaceStr)
-      }
+      },
+      editPost: () => {
+        showModalRef.value = true
+      },
+      closeModal: () => {
+        showModalRef.value = false
+      },
+      showModal: showModalRef,
+      bodyStyle: {
+        width: '600px'
+      },
+      segmented: {
+        content: 'soft',
+        footer: 'soft'
+      } as const
     }
   }
 })

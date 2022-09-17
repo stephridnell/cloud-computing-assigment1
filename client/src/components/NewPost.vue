@@ -1,5 +1,5 @@
 <template>
-  <n-card title="New message">
+  <n-card title="New post">
     <n-form ref="formRef" :model="model" :rules="rules">
       <n-form-item path="subject" label="Subject">
         <n-input

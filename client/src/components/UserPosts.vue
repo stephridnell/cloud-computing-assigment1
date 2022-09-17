@@ -1,7 +1,7 @@
 <template>
   <div>
     <n-space vertical>
-      <post-component v-for="(post, index) in posts" :key="index" :post="post"/>
+      <post-component v-for="(post, index) in posts" :key="index" :post="post" :can-edit="true" />
     </n-space>
   </div>
 </template>

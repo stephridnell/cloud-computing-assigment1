@@ -32,3 +32,7 @@ export const uploadFile = async (file: Express.Multer.File, prefix: string): Pro
     return undefined
   }
 }
+
+const deleteFile = async (fileName: string) => {
+  await storage.bucket(bucketName).file(fileName).delete();
+}
