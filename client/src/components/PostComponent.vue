@@ -14,7 +14,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
               <strong class="post-user">
-                {{ post.user.user_name }}
+                {{ post.user.user_name }} <span style="color: grey; font-size: 12px; font-weight: normal;" v-if="isEdited">(Edited)</span>
               </strong><br/>
               <span class="post-date">
                 {{ new Date(post.created_at).toLocaleString('en-AU') }}
@@ -71,7 +71,7 @@ export default defineComponent({
       default: false
     }
   },
-  setup: () => {
+  setup: (props) => {
     const showModalRef = ref(false)
     return {
       nl2br: (str: string) => {
@@ -79,6 +79,7 @@ export default defineComponent({
         const replaceStr = '$1' + breakTag + '$2'
         return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, replaceStr)
       },
+      isEdited: props.post.updated_at !== props.post.created_at,
       editPost: () => {
         showModalRef.value = true
       },

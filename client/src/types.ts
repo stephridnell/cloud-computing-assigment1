@@ -8,6 +8,7 @@ export interface User {
 export interface Post {
   id: string
   created_at: number
+  updated_at: number
   created_by: string
   image?: string
   message_text?: string
