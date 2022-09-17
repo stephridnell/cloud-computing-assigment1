@@ -16,6 +16,7 @@ import { NSpace, NButton } from 'naive-ui'
 import http from '../http'
 import PostComponent from './PostComponent.vue'
 import { Post } from '../types'
+import PostSkeleton from './PostSkeleton.vue'
 
 interface LatestPostsResponse {
   posts: Post[]
@@ -29,7 +30,8 @@ export default defineComponent({
   components: {
     PostComponent,
     NSpace,
-    NButton
+    NButton,
+    PostSkeleton
   },
   setup: () => {
     return {

@@ -2,7 +2,7 @@ import express, { Application, Request, RequestHandler, Response } from 'express
 import { getEntity, getEntityById, getLatestPosts, getLoginUser, getUserPosts, storeEntity, updateEntity } from './firestore'
 import cors from 'cors'
 import Multer from 'multer'
-import { uploadFile } from './storage'
+import { deleteFile, uploadFile } from './storage'
 import { v4 as uuidv4 } from 'uuid'
 
 const multer = Multer({
@@ -115,7 +115,7 @@ app.post('/post', multer.single('image'), async (req: Request, res: Response) =>
 })
 
 app.put('/update/:postId', multer.single('image'), async (req: Request, res: Response) => {
-  const { subject, messageText, userId } = req.body
+  const { subject, messageText, userId, oldImage } = req.body
 
   if (!subject) {
     return res.status(400).json({ msg: 'Message must include a subject' })
@@ -124,6 +124,11 @@ app.put('/update/:postId', multer.single('image'), async (req: Request, res: Res
   let imageUrl: string | void
   // upload the image to cloud storage
   if (req.file) {
+      // delete the old image
+      if (oldImage) {
+        const path = oldImage.replace('https://storage.googleapis.com/steph-ridnell-ass-1.appspot.com/', '')
+        await deleteFile(path)
+      }
       imageUrl = await uploadFile(req.file, userId + '-post')
   }
 
@@ -188,3 +193,4 @@ app.post('/:userId/update-password', async (req: Request, res: Response) => {
 app.listen(port, function () {
   console.log(`Listening on port ${port} !`)
 })
+

@@ -122,6 +122,7 @@ export default defineComponent({
           formData.append('subject', modelRef.value.subject)
           formData.append('messageText', modelRef.value.messageText ?? '')
           formData.append('userId', currentUser.value.id)
+          formData.append('oldImage', props.post.image ?? '')
           if (modelRef.value.image) {
             formData.append('image', modelRef.value.image)
           }
