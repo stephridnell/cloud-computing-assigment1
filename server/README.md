@@ -16,8 +16,7 @@ npm run dev
 npm run build
 ```
 
-## Run for prod
-
+## Deploy to google app engine (default credentials - service: api)
 ```
-npm run prod
+gcloud app deploy
 ```
