@@ -17,7 +17,7 @@
                 {{ post.user.user_name }} <span style="color: grey; font-size: 12px; font-weight: normal;" v-if="isEdited">(Edited)</span>
               </strong><br/>
               <span class="post-date">
-                {{ new Date(post.created_at).toLocaleString('en-AU') }}
+                {{ new Date(post.updated_at).toLocaleString('en-AU') }}
               </span>
             </div>
             <n-button v-if="canEdit" strong secondary type="primary" @click="editPost">Edit post</n-button>
