@@ -12,8 +12,8 @@ npm i
 npm run serve
 ```
 
-### Compiles and minifies for production
+### Compile and deploy to google app engine (default credentials)
 
 ```
-npm run build
+npm run build && gcloud app deploy
 ```
